@@ -1,5 +1,6 @@
 package lecho.lib.hellocharts.samples;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -17,6 +18,7 @@ import java.util.List;
 import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Column;
 import lecho.lib.hellocharts.model.ColumnChartData;
 import lecho.lib.hellocharts.model.SubcolumnValue;
@@ -244,22 +246,43 @@ public class ColumnChartActivity extends ActionBarActivity {
          * Generates columns with stacked subcolumns.
          */
         private void generateStackedData() {
-            int numSubcolumns = 4;
-            int numColumns = 8;
+            int numSubcolumns = 6;
             // Column can have many stacked subcolumns, here I use 4 stacke subcolumn in each of 4 columns.
             List<Column> columns = new ArrayList<Column>();
             List<SubcolumnValue> values;
-            for (int i = 0; i < numColumns; ++i) {
+            List<AxisValue> xAxisValues = new ArrayList<>();
+            List<AxisValue> yAxisValues = new ArrayList<>();
 
+            int[] colors = {Color.parseColor("#ea6953")
+                    ,Color.parseColor("#ffbd3e")
+                    ,Color.parseColor("#ffffff")
+                    ,Color.parseColor("#0c8ee1")
+                    ,Color.parseColor("#96d7e3")
+                    ,Color.parseColor("#7a60c5")};
+            int[][] initValues = {{4,8,10,7,14,20}
+                    ,{6,9,11,16,20,18}
+                    ,{7,10,9,12,16,22}
+                    ,{9,11,7,5,14,18}
+                    ,{12,6,8,4,15,18}
+                    ,{16,12,10,8,4,15}
+                    ,{20,12,4,8,5,10}};
+            String[] xLabels = {"11.1","11.2","11.3","11.4","11.5","11.6","11.7"};
+            String[] yLabels = {"0","20","40","60","80","100"};
+
+            for (int i = 0; i < initValues.length; ++i) {
                 values = new ArrayList<SubcolumnValue>();
                 for (int j = 0; j < numSubcolumns; ++j) {
-                    values.add(new SubcolumnValue((float) Math.random() * 20f + 5, ChartUtils.pickColor()));
+                    values.add(new SubcolumnValue(initValues[i][j], colors[j]));
                 }
-
                 Column column = new Column(values);
                 column.setHasLabels(hasLabels);
                 column.setHasLabelsOnlyForSelected(hasLabelForSelected);
                 columns.add(column);
+                xAxisValues.add(new AxisValue(i,xLabels[i].toCharArray()));
+            }
+
+            for (int k=0;k<yLabels.length;k++){
+                yAxisValues.add(new AxisValue(Float.valueOf(yLabels[k]),yLabels[k].toCharArray()));
             }
 
             data = new ColumnChartData(columns);
@@ -270,6 +293,8 @@ public class ColumnChartActivity extends ActionBarActivity {
             if (hasAxes) {
                 Axis axisX = new Axis();
                 Axis axisY = new Axis().setHasLines(true);
+                axisX.setValues(xAxisValues);
+                axisY.setValues(yAxisValues);
                 if (hasAxesNames) {
                     axisX.setName("Axis X");
                     axisY.setName("Axis Y");

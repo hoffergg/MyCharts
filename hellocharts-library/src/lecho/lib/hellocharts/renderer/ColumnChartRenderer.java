@@ -2,6 +2,7 @@ package lecho.lib.hellocharts.renderer;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.PointF;
@@ -228,7 +229,7 @@ public class ColumnChartRenderer extends AbstractChartRenderer {
             calculateRectToDraw(columnValue, subcolumnRawX, subcolumnRawX + subcolumnWidth, baseRawY, rawY);
             switch (mode) {
                 case MODE_DRAW:
-                    drawSubcolumn(canvas, column, columnValue, false);
+                    drawSubcolumn(canvas, column, columnValue, false,valueIndex == column.getValues().size() -1);
                     break;
                 case MODE_HIGHLIGHT:
                     highlightSubcolumn(canvas, column, columnValue, valueIndex, false);
@@ -301,7 +302,7 @@ public class ColumnChartRenderer extends AbstractChartRenderer {
             calculateRectToDraw(columnValue, rawX - halfColumnWidth, rawX + halfColumnWidth, rawBaseY, rawY);
             switch (mode) {
                 case MODE_DRAW:
-                    drawSubcolumn(canvas, column, columnValue, true);
+                    drawSubcolumn(canvas, column, columnValue, true,valueIndex == column.getValues().size() - 1);
                     break;
                 case MODE_HIGHLIGHT:
                     highlightSubcolumn(canvas, column, columnValue, valueIndex, true);
@@ -320,6 +321,20 @@ public class ColumnChartRenderer extends AbstractChartRenderer {
 
     private void drawSubcolumn(Canvas canvas, Column column, SubcolumnValue columnValue, boolean isStacked) {
         canvas.drawRect(drawRect, columnPaint);
+        if (column.hasLabels()) {
+            drawLabel(canvas, column, columnValue, isStacked, labelOffset);
+        }
+    }
+
+    private void drawSubcolumn(Canvas canvas, Column column, SubcolumnValue columnValue, boolean isStacked,boolean isTop) {
+        canvas.drawRect(drawRect, columnPaint);
+        if(isTop) {
+            Paint paint = new Paint();
+            paint.setColor(Color.parseColor("#cccccc"));
+            paint.setTextSize(22);
+            paint.setTextAlign(Paint.Align.CENTER);
+            canvas.drawText(String.valueOf(column.getValueCount()), drawRect.left + drawRect.width()/2, drawRect.top, paint);
+        }
         if (column.hasLabels()) {
             drawLabel(canvas, column, columnValue, isStacked, labelOffset);
         }

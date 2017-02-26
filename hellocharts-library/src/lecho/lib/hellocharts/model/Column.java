@@ -17,6 +17,8 @@ import lecho.lib.hellocharts.view.Chart;
 public class Column {
     private boolean hasLabels = false;
     private boolean hasLabelsOnlyForSelected = false;
+    private String index;
+
     private ColumnChartValueFormatter formatter = new SimpleColumnChartValueFormatter();
     // TODO: consider Collections.emptyList()
     private List<SubcolumnValue> values = new ArrayList<SubcolumnValue>();
@@ -26,6 +28,11 @@ public class Column {
     }
 
     public Column(List<SubcolumnValue> values) {
+        setValues(values);
+    }
+
+    public Column(String index, List<SubcolumnValue> values) {
+        this.index = index;
         setValues(values);
     }
 
@@ -50,6 +57,14 @@ public class Column {
         for (SubcolumnValue value : values) {
             value.finish();
         }
+    }
+
+    public float getValueCount(){
+        float count = 0;
+        for(SubcolumnValue value:values){
+            count +=value.getValue();
+        }
+        return count;
     }
 
     public List<SubcolumnValue> getValues() {
