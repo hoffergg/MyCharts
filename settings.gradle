@@ -1,2 +1,1 @@
-include ':hellocharts-samples'
-include ':hellocharts-library'
+include ':mycharts'
